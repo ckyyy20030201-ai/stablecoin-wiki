@@ -113,6 +113,28 @@
   .cover .coins { position: absolute; right: 90px; top: 150px; font-size: 150px; line-height: 1.1; text-align: center; z-index: 1; }
   .chip { display: inline-block; font-size: 18px; background: #fff; border-radius: 999px; padding: 6px 16px; margin-right: 10px; box-shadow: 0 4px 0 var(--line); }
 
+  /* 翻牌卡片（第 5 頁） */
+  .flips { position: relative; z-index: 1; }
+  .flip { flex: 1; height: 230px; perspective: 1000px; cursor: pointer; border-radius: 20px; outline: none; }
+  .flip-in { position: relative; width: 100%; height: 100%; transition: transform .6s; transform-style: preserve-3d; }
+  .flip.open .flip-in { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: #fff;
+    border-radius: 20px; padding: 26px 28px; box-shadow: 0 6px 0 var(--line); border-top: inherit; }
+  .face h3 { font-size: 26px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+  .face p { font-size: 21px; }
+  .face.back { transform: rotateY(180deg); background: #FFF0EB; }
+  .face.back h3 { color: var(--coral); }
+  .hint { position: absolute; right: 18px; bottom: 14px; font-size: 15px; color: var(--teal); font-weight: 700; }
+  .flip:focus-visible .face { box-shadow: 0 0 0 3px var(--teal); }
+
+  /* 國家切換（第 12 頁） */
+  .pick { font-size: 17px; color: var(--muted); margin-bottom: 12px; position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .pk { font: inherit; font-size: 16px; padding: 5px 14px; border-radius: 999px; border: 2px solid #E8DCC4; background: #fff; cursor: pointer; color: var(--ink); }
+  .pk.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  #cmp td, #cmp th { transition: opacity .25s, background .25s; }
+  #cmp .dim { opacity: .18; }
+  #cmp td.focus { background: #FFF6DD; font-weight: 700; }
+
   /* 控制列 */
   #bar { position: fixed; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,.1); }
   #bar div { height: 100%; background: var(--yellow); transition: width .3s; }
@@ -194,10 +216,20 @@
 <section class="slide" data-src="三大檢驗 sources/S1-BIS">
   <span class="tag purple">央行觀點</span>
   <h2>央行的<span class="hl">三大檢驗</span>：穩定幣都不及格</h2>
-  <div class="row">
-    <div class="card b-coral"><h3><span class="emoji">1️⃣</span>單一性</h3><p><b>標準：</b>每一元都等值，誰都照面額收。</p><p style="margin-top:8px">❌ 不同穩定幣可能有不同價格，也曾明顯跌破 1 美元。</p></div>
-    <div class="card b-teal"><h3><span class="emoji">2️⃣</span>彈性</h3><p><b>標準：</b>需要大量付款時，能彈性增加貨幣。</p><p style="margin-top:8px">❌ 必須先付全額才能發行，不像銀行可以透過放款創造存款。</p></div>
-    <div class="card b-purple"><h3><span class="emoji">3️⃣</span>完整性</h3><p><b>標準：</b>能防止詐騙、洗錢、資恐。</p><p style="margin-top:8px">❌ 可轉到非託管錢包，匿名、可能沒有身分驗證（KYC）。</p></div>
+  <p style="font-size:17px; color:var(--muted); margin:-6px 0 12px; position:relative; z-index:1">👆 先想想看穩定幣能不能過關，再點卡片翻面看答案</p>
+  <div class="row flips">
+    <div class="flip b-coral" tabindex="0"><div class="flip-in">
+      <div class="face front"><h3><span class="emoji">1️⃣</span>單一性</h3><p><b>標準：</b>每一元都等值，誰都照面額收。</p><span class="hint">點我翻面 ↻</span></div>
+      <div class="face back"><h3>❌ 不及格</h3><p>不同穩定幣可能有不同價格，也曾明顯跌破 1 美元。</p></div>
+    </div></div>
+    <div class="flip b-teal" tabindex="0"><div class="flip-in">
+      <div class="face front"><h3><span class="emoji">2️⃣</span>彈性</h3><p><b>標準：</b>需要大量付款時，能彈性增加貨幣。</p><span class="hint">點我翻面 ↻</span></div>
+      <div class="face back"><h3>❌ 不及格</h3><p>必須先付全額才能發行，不像銀行可以透過放款創造存款。</p></div>
+    </div></div>
+    <div class="flip b-purple" tabindex="0"><div class="flip-in">
+      <div class="face front"><h3><span class="emoji">3️⃣</span>完整性</h3><p><b>標準：</b>能防止詐騙、洗錢、資恐。</p><span class="hint">點我翻面 ↻</span></div>
+      <div class="face back"><h3>❌ 不及格</h3><p>可轉到非託管錢包，匿名、可能沒有身分驗證（KYC）。</p></div>
+    </div></div>
   </div>
   <div class="note warn"><b>立場提醒：</b>這是 BIS（各國央行組成的組織）的觀點，偏保守。BIS 認為穩定幣至多扮演「輔助角色」，並提出把央行準備、銀行存款、公債都代幣化的「統一帳本」作為替代方向。</div>
   <div class="src">來源：wiki/三大檢驗.md、wiki/sources/S1-BIS.md</div>
@@ -353,7 +385,10 @@
 <section class="slide" data-src="各國監管比較">
   <span class="tag yellow">一張表看懂</span>
   <h2 style="margin-bottom:16px">四地比較</h2>
-  <table>
+  <div class="pick">👆 點選國家，只看那一欄：
+    <button class="pk on" data-col="0">全部</button><button class="pk" data-col="2">🇺🇸 美國</button><button class="pk" data-col="3">🇪🇺 歐盟</button><button class="pk" data-col="4">🇭🇰 香港</button><button class="pk" data-col="5">🇹🇼 台灣</button>
+  </div>
+  <table id="cmp">
     <tr><th>項目</th><th>🇺🇸 美國</th><th>🇪🇺 歐盟</th><th>🇭🇰 香港</th><th>🇹🇼 台灣</th></tr>
     <tr><td>法律</td><td>GENIUS Act</td><td>MiCA</td><td>穩定幣條例</td><td>虛擬資產服務法</td></tr>
     <tr><td>主管機關</td><td>聯邦 OCC／各州</td><td>會員國主管機關；「重要」代幣由 EBA 監理</td><td>HKMA</td><td>金管會（須會商央行）</td></tr>
@@ -497,6 +532,23 @@
         q.querySelector('.fb').textContent = '再想想看～';
       }
     });
+  });
+
+  // 翻牌卡片
+  document.querySelectorAll('.flip').forEach(f => {
+    const go = () => f.classList.toggle('open');
+    f.addEventListener('click', go);
+    f.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+  });
+
+  // 比較表：點國家只看那一欄
+  document.querySelectorAll('.pk').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.pk').forEach(x => x.classList.toggle('on', x === b));
+    const col = +b.dataset.col;
+    document.querySelectorAll('#cmp tr').forEach(tr => [...tr.children].forEach((c, i) => {
+      c.classList.toggle('dim', col > 0 && i > 0 && i !== col - 1);
+      c.classList.toggle('focus', col > 0 && i === col - 1 && c.tagName === 'TD');
+    }));
   });
 
   window.addEventListener('resize', fit);

@@ -22,7 +22,8 @@
 
 ## 3. 教學 HTML 簡報
 - 線上瀏覽：`https://ckyyy20030201-ai.github.io/<repo 名稱>/slides/`（上傳後替換）
-- 檔案：[`slides/index.html`](slides/index.html)（16 頁，鍵盤 ← → 換頁，第 15 頁小測驗可點選）
+- 檔案：[`slides/index.html`](slides/index.html)（16 頁，鍵盤 ← → 換頁）
+- 互動：第 5 頁三大檢驗翻牌卡片、第 12 頁比較表點國家切換、第 15 頁小測驗可點選作答
 - 每張投影片右下角都標示對應的 wiki 頁；對照表見 [`slides/outline.md`](slides/outline.md)
 
 ## 4. Loop / Graph 設計
