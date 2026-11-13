@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>穩定幣與加密貨幣監管入門</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFF8EC;
+    --ink: #2B2D42;
+    --muted: #6B6E80;
+    --coral: #FF6B4A;
+    --teal: #1FA2A6;
+    --yellow: #FFC93C;
+    --purple: #7B61FF;
+    --card: #FFFFFF;
+    --line: #F0E3CC;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: #2B2D42; overflow: hidden;
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; color: var(--ink); }
+
+  /* 16:9 舞台，依視窗等比縮放 */
+  #stage { position: absolute; width: 1280px; height: 720px; left: 50%; top: 50%;
+    transform-origin: center center; background: var(--bg); border-radius: 12px; overflow: hidden; }
+  .slide { position: absolute; inset: 0; padding: 56px 72px 64px; display: none; flex-direction: column; }
+  .slide.active { display: flex; animation: pop .35s ease; }
+  @keyframes pop { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  /* 背景色塊裝飾 */
+  .slide::before { content: ""; position: absolute; width: 260px; height: 260px; border-radius: 50%;
+    background: var(--yellow); opacity: .18; right: -80px; top: -90px; }
+  .slide::after { content: ""; position: absolute; width: 180px; height: 180px; border-radius: 36px;
+    background: var(--teal); opacity: .10; left: -60px; bottom: -70px; transform: rotate(18deg); }
+
+  .tag { display: inline-block; font-size: 15px; font-weight: 700; color: #fff; background: var(--coral);
+    padding: 4px 14px; border-radius: 999px; margin-bottom: 14px; align-self: flex-start; }
+  .tag.teal { background: var(--teal); } .tag.purple { background: var(--purple); } .tag.yellow { background: var(--yellow); color: var(--ink); }
+  h1 { font-size: 64px; font-weight: 900; line-height: 1.15; }
+  h2 { font-size: 42px; font-weight: 900; margin-bottom: 26px; line-height: 1.2; }
+  h2 .hl { background: linear-gradient(transparent 60%, rgba(255,201,60,.6) 60%); }
+  p, li { font-size: 24px; line-height: 1.6; }
+  .lead { font-size: 26px; color: var(--muted); }
+  .src { position: absolute; right: 28px; bottom: 18px; font-size: 13px; color: var(--muted);
+    background: #fff; border: 1px dashed #D9C9A8; padding: 3px 10px; border-radius: 6px; }
+
+  .row { display: flex; gap: 24px; }
+  .card { background: var(--card); border-radius: 20px; padding: 26px 28px; box-shadow: 0 6px 0 var(--line); flex: 1; position: relative; z-index: 1; }
+  .card h3 { font-size: 26px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+  .card p, .card li { font-size: 21px; }
+  /* 版面修正：內容在標題下方的剩餘空間垂直置中（瀏覽檢查發現多頁下半部空白） */
+  .slide:not(.cover) > h2 { margin-bottom: auto; padding-bottom: 22px; }
+  .slide:not(.cover) > :nth-last-child(2) { margin-bottom: auto; }
+  .card ul { padding-left: 22px; }
+  .emoji { font-size: 34px; }
+  .b-coral { border-top: 8px solid var(--coral); } .b-teal { border-top: 8px solid var(--teal); }
+  .b-yellow { border-top: 8px solid var(--yellow); } .b-purple { border-top: 8px solid var(--purple); }
+
+  .big-def { font-size: 34px; font-weight: 700; line-height: 1.55; background: #fff; border-radius: 24px;
+    padding: 36px 40px; border-left: 14px solid var(--coral); box-shadow: 0 6px 0 var(--line); position: relative; z-index: 1; }
+  .note { background: #EAF7F7; border-radius: 16px; padding: 16px 22px; font-size: 19px; margin-top: 22px; position: relative; z-index: 1; }
+  .note.warn { background: #FFF0EB; }
+  .note b { color: var(--teal); } .note.warn b { color: var(--coral); }
+
+  /* 流程圖 */
+  .flow { display: flex; align-items: stretch; gap: 0; margin-top: 10px; position: relative; z-index: 1; }
+  .step { flex: 1; background: #fff; border-radius: 22px; padding: 26px 22px; text-align: center; box-shadow: 0 6px 0 var(--line); }
+  .step .num { width: 46px; height: 46px; border-radius: 50%; color: #fff; font-weight: 900; font-size: 24px;
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+  .step h3 { font-size: 28px; margin-bottom: 8px; }
+  .step p { font-size: 19px; color: var(--muted); }
+  .arrow { width: 60px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--coral); font-weight: 900; }
+
+  /* 表格 */
+  table { border-collapse: separate; border-spacing: 0; width: 100%; background: #fff; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 6px 0 var(--line); position: relative; z-index: 1; }
+  th, td { padding: 10px 14px; font-size: 16.5px; text-align: left; border-bottom: 1px solid #F3EADB; vertical-align: top; line-height: 1.45; }
+  th { background: var(--ink); color: #fff; font-size: 18px; }
+  td:first-child { font-weight: 700; background: #FFFBF3; white-space: nowrap; }
+  .na { color: #B0A48E; font-style: italic; }
+  .wait { color: var(--purple); font-weight: 700; }
+
+  /* 大數字 */
+  .bignum { font-size: 120px; font-weight: 900; line-height: 1; color: var(--coral); }
+  .bignum.teal { color: var(--teal); }
+
+  /* 時間軸 */
+  .timeline { display: flex; justify-content: space-between; position: relative; margin: 40px 10px 0; z-index: 1; }
+  .timeline::before { content: ""; position: absolute; left: 30px; right: 30px; top: 30px; height: 8px; background: #E8DCC4; border-radius: 4px; }
+  .tl { width: 220px; text-align: center; position: relative; }
+  .tl .dot { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;
+    font-size: 26px; color: #fff; border: 6px solid var(--bg); }
+  .tl .date { font-weight: 900; font-size: 22px; }
+  .tl .what { font-size: 18px; color: var(--muted); margin-top: 4px; }
+  .done .dot { background: var(--teal); } .now .dot { background: var(--coral); box-shadow: 0 0 0 6px rgba(255,107,74,.25); } .later .dot { background: #C9BFAE; }
+  .here { display: inline-block; margin-top: 8px; font-size: 14px; font-weight: 700; background: var(--coral); color: #fff; padding: 2px 10px; border-radius: 999px; }
+
+  /* 測驗 */
+  .quiz { display: flex; flex-direction: column; gap: 18px; position: relative; z-index: 1; }
+  .q { background: #fff; border-radius: 18px; padding: 16px 22px; box-shadow: 0 6px 0 var(--line); }
+  .q .qt { font-size: 21px; font-weight: 700; margin-bottom: 10px; }
+  .opts { display: flex; gap: 10px; flex-wrap: wrap; }
+  .opt { font: inherit; font-size: 18px; padding: 8px 16px; border-radius: 12px; border: 2px solid #E8DCC4; background: #FFFBF3; cursor: pointer; }
+  .opt:hover { border-color: var(--teal); }
+  .opt.right { background: var(--teal); color: #fff; border-color: var(--teal); }
+  .opt.wrong { background: #FFE3DB; border-color: var(--coral); text-decoration: line-through; }
+  .fb { font-size: 16px; margin-top: 8px; min-height: 22px; color: var(--muted); }
+
+  /* 封面 */
+  .cover { justify-content: center; background: linear-gradient(135deg, #FFF8EC 55%, #FFE7C2 100%); }
+  .cover .coins { position: absolute; right: 90px; top: 150px; font-size: 150px; line-height: 1.1; text-align: center; z-index: 1; }
+  .chip { display: inline-block; font-size: 18px; background: #fff; border-radius: 999px; padding: 6px 16px; margin-right: 10px; box-shadow: 0 4px 0 var(--line); }
+
+  /* 控制列 */
+  #bar { position: fixed; left: 0; right: 0; bottom: 0; height: 6px; background: rgba(255,255,255,.1); }
+  #bar div { height: 100%; background: var(--yellow); transition: width .3s; }
+  #nav { position: fixed; right: 18px; bottom: 16px; display: flex; gap: 8px; align-items: center; color: #fff; font-size: 14px; }
+  #nav button { width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(255,255,255,.15); color: #fff; font-size: 18px; cursor: pointer; }
+  #nav button:hover { background: rgba(255,255,255,.3); }
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- 1 封面 -->
+<section class="slide cover" data-src="index">
+  <span class="tag">LLM Wiki 教學簡報</span>
+  <h1>穩定幣與<br>加密貨幣監管入門</h1>
+  <p class="lead" style="margin-top:18px">從「它是什麼」到「各國怎麼管」，一次看懂</p>
+  <div style="margin-top:34px; position:relative; z-index:1">
+    <span class="chip">🇺🇸 美國</span><span class="chip">🇪🇺 歐盟</span><span class="chip">🇭🇰 香港</span><span class="chip">🇹🇼 台灣</span>
+  </div>
+  <div class="coins">🪙<br>⚖️</div>
+  <div class="src">來源：wiki/index.md</div>
+</section>
+
+<!-- 2 為什麼要懂 -->
+<section class="slide" data-src="穩定幣 各國監管比較">
+  <span class="tag teal">暖身</span>
+  <h2>為什麼要懂<span class="hl">穩定幣</span>？</h2>
+  <div class="row" style="align-items:stretch">
+    <div class="card b-coral" style="text-align:center">
+      <div class="bignum">99%</div>
+      <p style="margin-top:14px">超過 99% 的穩定幣<br>以<b>美元</b>計價</p>
+    </div>
+    <div class="card b-teal" style="text-align:center">
+      <div class="bignum teal">4</div>
+      <p style="margin-top:14px">美國、歐盟、香港、台灣<br>都已經<b>立法</b>管理</p>
+    </div>
+    <div class="card b-yellow">
+      <h3><span class="emoji">🤔</span>今天要回答</h3>
+      <ul>
+        <li>它是什麼？怎麼運作？</li>
+        <li>為什麼央行擔心？</li>
+        <li>各國怎麼管？</li>
+        <li>台灣走到哪一步？</li>
+      </ul>
+    </div>
+  </div>
+  <div class="src">來源：wiki/穩定幣.md、wiki/各國監管比較.md</div>
+</section>
+
+<!-- 3 是什麼 -->
+<section class="slide" data-src="穩定幣">
+  <span class="tag">概念</span>
+  <h2>穩定幣是什麼？</h2>
+  <div class="big-def">在區塊鏈上發行、目標是維持與某種<span style="color:var(--coral)">法定貨幣</span>（通常是美元）<span style="color:var(--teal)">固定價值</span>的數位代幣。</div>
+  <div class="row" style="margin-top:26px">
+    <div class="card b-teal"><h3><span class="emoji">🏢</span>誰發的？</h3><p>多數由<b>單一公司</b>發行。</p></div>
+    <div class="card b-yellow"><h3><span class="emoji">🚪</span>原本用途</h3><p>進入加密貨幣世界的<b>入口</b>。</p></div>
+    <div class="card b-purple"><h3><span class="emoji">🌏</span>跨境匯款</h3><p>對沒有美元帳戶的人（如移工）有吸引力，但不一定比較便宜或快。</p></div>
+  </div>
+  <div class="src">來源：wiki/穩定幣.md</div>
+</section>
+
+<!-- 4 怎麼運作 -->
+<section class="slide" data-src="穩定幣">
+  <span class="tag">概念</span>
+  <h2>怎麼運作？三個步驟</h2>
+  <div class="flow">
+    <div class="step"><div class="num" style="background:var(--coral)">1</div><h3>💵 發行</h3><p>使用者先付 1 美元，發行人才發出 1 枚穩定幣<br><b>「先付現、後發行」</b></p></div>
+    <div class="arrow">➜</div>
+    <div class="step"><div class="num" style="background:var(--teal)">2</div><h3>🏦 準備</h3><p>發行人把錢拿去持有準備資產，主要是<b>短期美元資產</b>（例如短期美國公債）</p></div>
+    <div class="arrow">➜</div>
+    <div class="step"><div class="num" style="background:var(--purple)">3</div><h3>🔁 贖回</h3><p>持有人把穩定幣交回發行人，<b>換回法幣</b></p></div>
+  </div>
+  <div class="note"><b>記住這個畫面：</b>後面各國的法規，幾乎都在管第 2 步「準備資產夠不夠、安不安全」，以及第 3 步「能不能順利贖回」。</div>
+  <div class="src">來源：wiki/穩定幣.md</div>
+</section>
+
+<!-- 5 三大檢驗 -->
+<section class="slide" data-src="三大檢驗 sources/S1-BIS">
+  <span class="tag purple">央行觀點</span>
+  <h2>央行的<span class="hl">三大檢驗</span>：穩定幣都不及格</h2>
+  <div class="row">
+    <div class="card b-coral"><h3><span class="emoji">1️⃣</span>單一性</h3><p><b>標準：</b>每一元都等值，誰都照面額收。</p><p style="margin-top:8px">❌ 不同穩定幣可能有不同價格，也曾明顯跌破 1 美元。</p></div>
+    <div class="card b-teal"><h3><span class="emoji">2️⃣</span>彈性</h3><p><b>標準：</b>需要大量付款時，能彈性增加貨幣。</p><p style="margin-top:8px">❌ 必須先付全額才能發行，不像銀行可以透過放款創造存款。</p></div>
+    <div class="card b-purple"><h3><span class="emoji">3️⃣</span>完整性</h3><p><b>標準：</b>能防止詐騙、洗錢、資恐。</p><p style="margin-top:8px">❌ 可轉到非託管錢包，匿名、可能沒有身分驗證（KYC）。</p></div>
+  </div>
+  <div class="note warn"><b>立場提醒：</b>這是 BIS（各國央行組成的組織）的觀點，偏保守。BIS 認為穩定幣至多扮演「輔助角色」，並提出把央行準備、銀行存款、公債都代幣化的「統一帳本」作為替代方向。</div>
+  <div class="src">來源：wiki/三大檢驗.md、wiki/sources/S1-BIS.md</div>
+</section>
+
+<!-- 6 風險 -->
+<section class="slide" data-src="穩定幣風險">
+  <span class="tag purple">央行觀點</span>
+  <h2>穩定幣有什麼<span class="hl">風險</span>？</h2>
+  <div class="row">
+    <div class="card b-coral">
+      <h3><span class="emoji">🌍</span>對新興國家</h3>
+      <ul>
+        <li><b>隱性美元化</b>：大家改用美元交易</li>
+        <li><b>削弱貨幣政策</b>：本國貨幣被替代</li>
+        <li><b>資本外逃</b>：高通膨或有外匯管制的國家，錢更容易流出</li>
+      </ul>
+    </div>
+    <div class="card b-teal">
+      <h3><span class="emoji">🏛️</span>對金融體系</h3>
+      <ul>
+        <li><b>利益衝突</b>：要保證穩定，又想拿準備去賺錢</li>
+        <li><b>擠兌拋售</b>：大量贖回時被迫拋售美債等安全資產</li>
+        <li><b>洗錢</b>：見上一頁「完整性」</li>
+      </ul>
+    </div>
+  </div>
+  <div class="src">來源：wiki/穩定幣風險.md</div>
+</section>
+
+<!-- 7 監管原則 -->
+<section class="slide" data-src="監管原則">
+  <span class="tag yellow">監管</span>
+  <h2>監管原則：<span class="hl">同樣活動、同樣風險、同樣監管</span></h2>
+  <div class="row" style="flex-wrap:wrap; gap:18px">
+    <div class="card b-coral" style="flex:1 1 30%"><h3>⚖️ 技術中立</h3><p>不因為用了新技術就放寬或加嚴</p></div>
+    <div class="card b-teal" style="flex:1 1 30%"><h3>🕵️ 完整性優先</h3><p>KYC、旅行規則、鏈上分析凍結不法資金</p></div>
+    <div class="card b-yellow" style="flex:1 1 30%"><h3>💰 準備與透明</h3><p>高品質準備、定期審計與揭露</p></div>
+    <div class="card b-purple" style="flex:1 1 30%"><h3>📍 本地授權</h3><p>須在當地取得授權並設立公司</p></div>
+    <div class="card b-teal" style="flex:1 1 30%"><h3>🤝 國際協調</h3><p>避免業者往最寬鬆的地方跑（監管套利）</p></div>
+    <div class="card b-coral" style="flex:1 1 30%"><h3>🚫 限制付息</h3><p>部分地區禁止向持有人付利息</p></div>
+  </div>
+  <div class="note"><b>用法：</b>接下來看各國法規時，可以拿這 6 條當檢查清單。</div>
+  <div class="src">來源：wiki/監管原則.md</div>
+</section>
+
+<!-- 8 美國 -->
+<section class="slide" data-src="美國-GENIUS-Act">
+  <span class="tag teal">🇺🇸 美國</span>
+  <h2>美國 GENIUS Act：第一部聯邦穩定幣法</h2>
+  <div class="row">
+    <div class="card b-teal">
+      <h3>🛣️ 三條發行路徑</h3>
+      <ul>
+        <li>銀行的子公司</li>
+        <li>聯邦執照（貨幣監理署 OCC）</li>
+        <li>州執照（流通量低於 100 億美元）</li>
+      </ul>
+      <p style="margin-top:8px">外國發行人：向 OCC 註冊</p>
+    </div>
+    <div class="card b-coral">
+      <h3>📋 核心規則</h3>
+      <ul>
+        <li>1:1 高品質準備，揭露＋審計</li>
+        <li>適用洗錢防制（銀行秘密法）</li>
+        <li><b>禁止付利息</b>給持有人</li>
+        <li>名稱不能像政府發行</li>
+      </ul>
+    </div>
+    <div class="card b-yellow">
+      <h3>⏰ 時間點（分開看！）</h3>
+      <p><b>簽署：</b>2025-07-18</p>
+      <p style="margin-top:6px"><b>法律生效：</b>簽署後 18 個月，或最終規則發布後 120 天，取較早者</p>
+      <p style="margin-top:6px"><b>交易所過渡期：</b>生效滿三年後，只能上架合格穩定幣</p>
+    </div>
+  </div>
+  <div class="src">來源：wiki/美國-GENIUS-Act.md</div>
+</section>
+
+<!-- 9 歐盟 -->
+<section class="slide" data-src="歐盟-MiCA">
+  <span class="tag purple">🇪🇺 歐盟</span>
+  <h2>歐盟 MiCA：把穩定幣<span class="hl">分成兩類</span></h2>
+  <div class="row">
+    <div class="card b-teal">
+      <h3><span class="emoji">💶</span>EMT 電子貨幣代幣</h3>
+      <p><b>盯住：</b>只盯<b>一種</b>官方貨幣</p>
+      <p><b>誰能發：</b>銀行或電子貨幣機構</p>
+      <p><b>例子：</b>USDC（盯美元）</p>
+    </div>
+    <div class="card b-purple">
+      <h3><span class="emoji">🧺</span>ART 資產參考代幣</h3>
+      <p><b>盯住：</b>一籃子貨幣、商品或其他資產</p>
+      <p><b>誰能發：</b>須直接依 MiCA 申請授權</p>
+      <p><b>要求：</b>比 EMT 更重</p>
+    </div>
+  </div>
+  <div class="note"><b>分類關鍵：</b>看代幣「<b>盯住什麼</b>」，不是看「用什麼擔保」。另外兩類都<b>禁止付息</b>（第 40、50 條），準備要與自有資產分開保管、可依面額贖回。穩定幣規則 2024-06-30 適用，整部 MiCA 2024-12-30 全面適用。</div>
+  <div class="src">來源：wiki/歐盟-MiCA.md</div>
+</section>
+
+<!-- 10 ART 0 家 -->
+<section class="slide" data-src="歐盟-MiCA">
+  <span class="tag purple">🇪🇺 重點</span>
+  <h2>監管設計會<span class="hl">影響市場</span></h2>
+  <p class="lead" style="margin-bottom:20px">2026 年 3 月 ESMA 登記的發行人數：</p>
+  <div class="row" style="align-items:stretch">
+    <div class="card b-teal" style="text-align:center"><div class="bignum teal">19</div><p style="margin-top:10px">EMT 發行人</p></div>
+    <div class="card b-coral" style="text-align:center"><div class="bignum">0</div><p style="margin-top:10px">ART 發行人</p></div>
+    <div class="card b-yellow" style="flex:1.4">
+      <h3>💡 怎麼解讀？</h3>
+      <p>規定比較重的 ART，結果<b>沒有人去申請</b>。</p>
+      <p style="margin-top:12px">另一個例子：USDC 被 EBA 認定為歐盟第一個「重要 EMT」，自 <b>2026-11-12</b> 起由 EBA 與該國主管機關<b>雙重監理</b>。</p>
+    </div>
+  </div>
+  <div class="src">來源：wiki/歐盟-MiCA.md</div>
+</section>
+
+<!-- 11 香港 -->
+<section class="slide" data-src="香港-穩定幣條例">
+  <span class="tag">🇭🇰 香港</span>
+  <h2>香港《穩定幣條例》：發牌制度</h2>
+  <div class="row">
+    <div class="card b-coral">
+      <h3>🪪 誰要領牌？</h3>
+      <ul>
+        <li>在香港發行法幣參考穩定幣的人</li>
+        <li>在香港以外發行、但<b>盯港元</b>的人</li>
+      </ul>
+      <p style="margin-top:8px">散戶只能買持牌發行人的穩定幣</p>
+    </div>
+    <div class="card b-teal">
+      <h3>📋 牌照條件</h3>
+      <ul>
+        <li>在香港有主要營業地點</li>
+        <li>準備與自有資產分離</li>
+        <li>資本要求、揭露、風險管理</li>
+      </ul>
+    </div>
+    <div class="card b-yellow">
+      <h3>⏰ 時間</h3>
+      <p><b>通過：</b>2025-05-21</p>
+      <p><b>生效：</b>2025-08-01</p>
+      <p><b>首批 2 張牌照：</b>2026-04-10</p>
+      <p style="margin-top:6px; color:var(--muted); font-size:17px">中間隔了 8 個多月：立法不等於馬上有產品</p>
+    </div>
+  </div>
+  <div class="note"><b>💡 域外管轄小提示：</b>香港不只管「在香港發生的事」，連在海外發行、但盯港元的穩定幣也要管。法律效力延伸到境外，就叫<b>域外管轄</b>。</div>
+  <div class="src">來源：wiki/香港-穩定幣條例.md</div>
+</section>
+
+<!-- 12 比較表 -->
+<section class="slide" data-src="各國監管比較">
+  <span class="tag yellow">一張表看懂</span>
+  <h2 style="margin-bottom:16px">四地比較</h2>
+  <table>
+    <tr><th>項目</th><th>🇺🇸 美國</th><th>🇪🇺 歐盟</th><th>🇭🇰 香港</th><th>🇹🇼 台灣</th></tr>
+    <tr><td>法律</td><td>GENIUS Act</td><td>MiCA</td><td>穩定幣條例</td><td>虛擬資產服務法</td></tr>
+    <tr><td>主管機關</td><td>聯邦 OCC／各州</td><td>會員國主管機關；「重要」代幣由 EBA 監理</td><td>HKMA</td><td>金管會（須會商央行）</td></tr>
+    <tr><td>誰能發行</td><td>銀行子公司、聯邦或州執照</td><td>EMT：銀行或電子貨幣機構</td><td>持牌發行人</td><td class="wait">待子法</td></tr>
+    <tr><td>準備要求</td><td>1:1 高品質，揭露＋審計</td><td>分離保管，依面額贖回</td><td>分離保管，資本要求</td><td>百分百準備（媒體報導）</td></tr>
+    <tr><td>可否付息</td><td>禁止</td><td>禁止</td><td class="na">資料未涵蓋</td><td class="na">資料未涵蓋</td></tr>
+    <tr><td>洗錢防制</td><td>適用銀行秘密法</td><td class="na">資料未涵蓋</td><td class="na">資料未涵蓋</td><td>由登記制提升為許可制</td></tr>
+    <tr><td>外國發行人</td><td>向 OCC 註冊</td><td>須先在歐盟取得授權</td><td>境外盯港元也須領牌</td><td class="na">資料未涵蓋</td></tr>
+  </table>
+  <p style="font-size:16px; color:var(--muted); margin-top:12px; position:relative; z-index:1"><span class="na">資料未涵蓋</span>＝本 Wiki 的來源沒有提到　｜　<span class="wait">待子法</span>＝法律授權子法規定、尚未訂定</p>
+  <div class="src">來源：wiki/各國監管比較.md</div>
+</section>
+
+<!-- 13 台灣 -->
+<section class="slide" data-src="台灣-虛擬資產服務法">
+  <span class="tag teal">🇹🇼 台灣</span>
+  <h2>台灣《虛擬資產服務法》</h2>
+  <div class="row">
+    <div class="card b-teal">
+      <h3>🔄 監理轉向</h3>
+      <p>過去：只做<b>洗錢防制登記</b></p>
+      <p>現在：<b>許可制</b>，擴大到健全營運、市場秩序、交易人保護</p>
+      <p style="margin-top:8px; font-size:18px">業務類型：交換、交易平台、移轉、保管、承銷、借貸等</p>
+    </div>
+    <div class="card b-coral">
+      <h3>🪙 穩定幣</h3>
+      <p><b>定義：</b>與單一或多個法定貨幣價值連結、以維持價值穩定的虛擬資產</p>
+      <p style="margin-top:8px"><b>發行：</b>向金管會申請許可，許可前須會商<b>中央銀行</b>同意</p>
+    </div>
+    <div class="card b-purple">
+      <h3>⚠️ 罰則</h3>
+      <p><b>詐欺或操縱市場：</b>3 年以上 10 年以下有期徒刑，併科 1,000 萬至 2 億元罰金</p>
+      <p style="margin-top:8px"><b>未經許可經營：</b>最重 7 年</p>
+    </div>
+  </div>
+  <div class="src">來源：wiki/台灣-虛擬資產服務法.md</div>
+</section>
+
+<!-- 14 時間軸 -->
+<section class="slide" data-src="台灣-虛擬資產服務法">
+  <span class="tag teal">🇹🇼 台灣</span>
+  <h2>台灣現在<span class="hl">走到哪一步</span>？</h2>
+  <div class="timeline">
+    <div class="tl done"><div class="dot">✓</div><div class="date">2026-04-02</div><div class="what">行政院通過草案</div></div>
+    <div class="tl done"><div class="dot">✓</div><div class="date">2026-06-30</div><div class="what">立法院三讀</div></div>
+    <div class="tl now"><div class="dot">✎</div><div class="date">進行中</div><div class="what">訂定 9 項子法<br>（含穩定幣許可與管理辦法）</div><span class="here">現在在這裡</span></div>
+    <div class="tl later"><div class="dot">▶</div><div class="date">最快 2027 Q1</div><div class="what">金管會目標施行</div></div>
+    <div class="tl later"><div class="dot">⌛</div><div class="date">施行後兩年內</div><div class="what">業者須取得許可</div></div>
+  </div>
+  <div class="note" style="margin-top:46px"><b>重點：</b>法律已經通過，但「誰能發行穩定幣」等細節要等子法訂好才知道。</div>
+  <div class="src">來源：wiki/台灣-虛擬資產服務法.md</div>
+</section>
+
+<!-- 15 小測驗 -->
+<section class="slide" data-src="三大檢驗 歐盟-MiCA 台灣-虛擬資產服務法">
+  <span class="tag">小測驗</span>
+  <h2 style="margin-bottom:18px">換你試試看！點選答案 👇</h2>
+  <div class="quiz">
+    <div class="q" data-ans="c" data-exp="BIS 的三大檢驗是單一性、彈性、完整性。">
+      <div class="qt">Q1　下列哪一項<u>不是</u> BIS 評估穩定幣的「三大檢驗」？</div>
+      <div class="opts"><button class="opt" data-k="a">A. 單一性</button><button class="opt" data-k="b">B. 彈性</button><button class="opt" data-k="c">C. 獲利性</button><button class="opt" data-k="d">D. 完整性</button></div>
+      <div class="fb"></div>
+    </div>
+    <div class="q" data-ans="a" data-exp="MiCA 中只盯一種官方貨幣的是 EMT（電子貨幣代幣），例如 USDC。">
+      <div class="qt">Q2　只盯「一種」官方貨幣（例如美元）的穩定幣，在歐盟 MiCA 屬於哪一類？</div>
+      <div class="opts"><button class="opt" data-k="a">A. EMT 電子貨幣代幣</button><button class="opt" data-k="b">B. ART 資產參考代幣</button><button class="opt" data-k="c">C. 不受 MiCA 管</button></div>
+      <div class="fb"></div>
+    </div>
+    <div class="q" data-ans="b" data-exp="台灣發行穩定幣須向金管會申請許可，許可前須會商中央銀行同意。">
+      <div class="qt">Q3　在台灣發行穩定幣，金管會許可前須會商哪個機關同意？</div>
+      <div class="opts"><button class="opt" data-k="a">A. 財政部</button><button class="opt" data-k="b">B. 中央銀行</button><button class="opt" data-k="c">C. 法務部</button></div>
+      <div class="fb"></div>
+    </div>
+  </div>
+  <div class="src">來源：wiki/三大檢驗.md、wiki/歐盟-MiCA.md、wiki/台灣-虛擬資產服務法.md</div>
+</section>
+
+<!-- 16 總結 -->
+<section class="slide" data-src="穩定幣 三大檢驗 監管原則 各國監管比較 台灣-虛擬資產服務法 sources/S1-BIS sources/S2-GENIUS sources/S3-MiCA sources/S4-HK sources/S5-TW">
+  <span class="tag yellow">總結</span>
+  <h2>三句話帶走</h2>
+  <div class="row" style="flex-direction:column; gap:16px">
+    <div class="card b-coral"><p>🪙 <b>穩定幣</b>是盯住法幣的代幣，靠「先付現發行 → 持有準備 → 可贖回」維持價值。</p></div>
+    <div class="card b-teal"><p>⚖️ 央行擔心它在<b>單一性、彈性、完整性</b>上不及格，所以各國用<b>準備要求、執照、禁止付息</b>等方式管理。</p></div>
+    <div class="card b-yellow"><p>🇹🇼 台灣已三讀《虛擬資產服務法》，正在訂子法，<b>最快 2027 年第一季施行</b>。</p></div>
+  </div>
+  <p style="font-size:15px; color:var(--muted); margin-top:20px; position:relative; z-index:1; line-height:1.5">
+    原始資料：S1 BIS 年度經濟報告 2025 第三章｜S2 美國 GENIUS Act（CRS Insight IN12553）｜S3 歐盟 MiCA（ESMA、EBA）｜S4 香港《穩定幣條例》（香港政府新聞網等）｜S5 台灣《虛擬資產服務法》（法源法律網等）
+  </p>
+  <div class="src">來源：wiki/ 各概念頁與 wiki/sources/ 摘要頁</div>
+</section>
+
+</div>
+
+<div id="bar"><div></div></div>
+<div id="nav"><span id="count"></span><button id="prev" aria-label="上一頁">◀</button><button id="next" aria-label="下一頁">▶</button></div>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  const stage = document.getElementById('stage');
+  let cur = 0;
+  try { const h = parseInt(location.hash.slice(1)); if (h >= 1 && h <= slides.length) cur = h - 1; } catch (e) {}
+
+  function fit() {
+    const s = Math.min(window.innerWidth / 1280, (window.innerHeight - 10) / 720) * 0.97;
+    stage.style.transform = `translate(-50%, -50%) scale(${s})`;
+  }
+  function show(i) {
+    cur = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, k) => s.classList.toggle('active', k === cur));
+    document.getElementById('count').textContent = `${cur + 1} / ${slides.length}`;
+    document.querySelector('#bar div').style.width = `${(cur + 1) / slides.length * 100}%`;
+    history.replaceState(null, '', '#' + (cur + 1));
+  }
+  document.getElementById('prev').onclick = () => show(cur - 1);
+  document.getElementById('next').onclick = () => show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); show(cur + 1); }
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); show(cur - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+  let tx = null;
+  document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+  document.addEventListener('touchend', e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1));
+    tx = null;
+  });
+
+  // 小測驗
+  document.querySelectorAll('.q').forEach(q => {
+    q.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+      const ok = b.dataset.k === q.dataset.ans;
+      b.classList.add(ok ? 'right' : 'wrong');
+      if (ok) {
+        q.querySelectorAll('.opt').forEach(x => x.disabled = true);
+        q.querySelector('.fb').textContent = '✅ 答對了！' + q.dataset.exp;
+      } else {
+        q.querySelector('.fb').textContent = '再想想看～';
+      }
+    });
+  });
+
+  window.addEventListener('resize', fit);
+  fit(); show(cur);
+</script>
+</body>
+</html>
